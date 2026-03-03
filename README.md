@@ -1,15 +1,18 @@
 # Conditional access Baseline
 
+> [!WARNING]
+> **Disclaimer:** This repository is a fork of the original Conditional Access Baseline. For the original and official baseline, please refer to the [master repository](https://github.com/microsoft/ConditionalAccessforZeroTrustResources). This fork may include custom modifications, enhancements, or experimental policies that differ from the original. Use at your own discretion and ensure thorough testing before deploying in production environments.
+
 This conditional access baseline is based on the Microsoft Conditional Access Baseline by Claus Jespersen. This one is slightly minimized and less difficult to understand but still protects almost everything you could wish for. Use this baseline to start off with and expend or modify where needed.
 
 > [!TIP]
 > There's no need to create policies, groups or named locations yourself. This can be done automated using Mick-K his [Intune Management tool](https://github.com/Micke-K/IntuneManagement). This is described in [Importing the baseline](#importing-the-baseline).
 
-
 > [!IMPORTANT]
 > Do not forget to add your break the glass/emergency access accounts to the exclusion group. When using this baseline that would be **CA-BreakGlassAccounts - Exclude**.
 
 # Table of Contents
+
 - [Conditional access Baseline](#conditional-access-baseline)
 - [Table of Contents](#table-of-contents)
   - [Resources](#resources)
@@ -23,11 +26,11 @@ This conditional access baseline is based on the Microsoft Conditional Access Ba
     - [2025.2.3](#202523)
     - [2026.2.1](#202621)
   - [Persona's](#personas)
-      - [Global](#global)
-      - [Admins](#admins)
-      - [Internals](#internals)
-      - [Guests](#guests)
-      - [Agents](#agents)
+    - [Global](#global)
+    - [Admins](#admins)
+    - [Internals](#internals)
+    - [Guests](#guests)
+    - [Agents](#agents)
   - [Conditional access policies](#conditional-access-policies)
     - [CA000-Global-IdentityProtection-AnyApp-AnyPlatform-MFA](#ca000-global-identityprotection-anyapp-anyplatform-mfa)
     - [CA001-Global-AttackSurfaceReduction-AnyApp-AnyPlatform-BLOCK-CountryWhitelist](#ca001-global-attacksurfacereduction-anyapp-anyplatform-block-countrywhitelist)
@@ -52,14 +55,14 @@ This conditional access baseline is based on the Microsoft Conditional Access Ba
     - [CA207-Internals-AttackSurfaceReduction-SelectedApps-AnyPlatform-BLOCK](#ca207-internals-attacksurfacereduction-selectedapps-anyplatform-block)
     - [CA208-Internals-BaseProtection-AnyApp-MacOS-Compliant](#ca208-internals-baseprotection-anyapp-macos-compliant)
     - [CA209-Internals-IdentityProtection-AllApps-AnyPlatform-ContinuousAccessEvaluation](#ca209-internals-identityprotection-allapps-anyplatform-continuousaccessevaluation)
-    - [CA300-ServiceAccounts-IdentityProtection-AnyApp-AnyPlatform-MFA](#ca300-serviceaccounts-identityprotection-anyapp-anyplatform-mfa)
-    - [CA301-ServiceAccounts-AttackSurfaceReduction-AllApps-AnyPlatform-BlockUntrustedLocations](#ca301-serviceaccounts-attacksurfacereduction-allapps-anyplatform-blockuntrustedlocations)
     - [CA400-GuestUsers-IdentityProtection-AnyApp-AnyPlatform-MFA](#ca400-guestusers-identityprotection-anyapp-anyplatform-mfa)
     - [CA401-GuestUsers-AttackSurfaceReduction-AllApps-AnyPlatform-BlockNonGuestAppAccess](#ca401-guestusers-attacksurfacereduction-allapps-anyplatform-blocknonguestappaccess)
     - [CA402-GuestUsers-IdentityProtection-AllApps-AnyPlatform-SigninFrequency](#ca402-guestusers-identityprotection-allapps-anyplatform-signinfrequency)
     - [CA403-Guests-IdentityProtection-AllApps-AnyPlatform-PersistentBrowser](#ca403-guests-identityprotection-allapps-anyplatform-persistentbrowser)
     - [CA404-Guests-AttackSurfaceReduction-SelectedApps-AnyPlatform-BLOCK](#ca404-guests-attacksurfacereduction-selectedapps-anyplatform-block)
-    - [CA501-Agents-IdentityProtection-AnyApp-AnyPlatform-BLOCK-HighRiskAgent](#ca501-agents-identityprotection-anyapp-anyplatform-block-highriskagent)
+    - [CA500-ServiceAccounts-IdentityProtection-AnyApp-AnyPlatform-MFA](#ca300-serviceaccounts-identityprotection-anyapp-anyplatform-mfa)
+    - [CA501-ServiceAccounts-AttackSurfaceReduction-AllApps-AnyPlatform-BlockUntrustedLocations](#ca301-serviceaccounts-attacksurfacereduction-allapps-anyplatform-blockuntrustedlocations)
+    - [CA601-Agents-IdentityProtection-AnyApp-AnyPlatform-BLOCK-HighRiskAgent](#ca501-agents-identityprotection-anyapp-anyplatform-block-highriskagent)
   - [Named locations](#named-locations)
   - [Considerations](#considerations)
   - [Troubleshooting](#troubleshooting)
@@ -67,10 +70,8 @@ This conditional access baseline is based on the Microsoft Conditional Access Ba
     - [Setup IntuneManagement](#setup-intunemanagement)
     - [Import the configuration](#import-the-configuration)
 
-
-
-
 ## Resources
+
 ➡ Microsoft Learn: https://learn.microsoft.com/en-us/azure/architecture/guide/security/conditional-access-framework
 
 ➡ Framework documentation by Claus Jespersen: https://github.com/microsoft/ConditionalAccessforZeroTrustResources/blob/main/ConditionalAccessGovernanceAndPrinciplesforZeroTrust%20October%202023.pdf
@@ -80,84 +81,95 @@ This conditional access baseline is based on the Microsoft Conditional Access Ba
 ➡ idPowerToys for CA documentation: https://idpowertoys.merill.net/
 
 ## Prerequisites
-* Security Defaults must be disabled before importing Conditional Access policies.
-* Make sure **Microsoft Intune Enrollment** (App id: d4ebce55-015a-49b5-a083-c84d1797ae8c) app exists in your tenant. Otherwise, create manually by using `New-MgServicePrincipal -AppId d4ebce55-015a-49b5-a083-c84d1797ae8c`
+
+- Security Defaults must be disabled before importing Conditional Access policies.
+- Make sure **Microsoft Intune Enrollment** (App id: d4ebce55-015a-49b5-a083-c84d1797ae8c) app exists in your tenant. Otherwise, create manually by using `New-MgServicePrincipal -AppId d4ebce55-015a-49b5-a083-c84d1797ae8c`
 
 ## Roadmap
-* Feedback and enhancement requests can be provided by opening a repository issue.
+
+- Feedback and enhancement requests can be provided by opening a repository issue.
 
 ## Version history
-| Version nr | Release date |
-| -------- | -------- |
-| 2024.4.1 | Released 10-04-2024 |
-| 2024.6.1 | Released 26-06-2024 |
-| 2025.2.1 | Released 01-02-2025 |
-| 2025.2.2 | Released 06-02-2025 |
-| 2025.2.3 | Released 13-02-2025 |
-| 2026.2.1 | Released 13-02-2026 |
 
+| Version nr | Release date        |
+| ---------- | ------------------- |
+| 2024.4.1   | Released 10-04-2024 |
+| 2024.6.1   | Released 26-06-2024 |
+| 2025.2.1   | Released 01-02-2025 |
+| 2025.2.2   | Released 06-02-2025 |
+| 2025.2.3   | Released 13-02-2025 |
+| 2026.2.1   | Released 13-02-2026 |
 
 ## Changelog
+
 ### 2024.6.1
-* CA208: Added this policy to require MacOS device compliance 
-* CA207: Added this policy to explicitly block certain apps on any platform for the internals persona.
-* CA404: Added this policy to explicitly block certain apps on any platform for the guest persona.
-* CA103: Added this policy to have never persistent browser sessions on any platform for admins persona
-* CA206: Added this policy to have never persistent browser sessions on any platform for internals persona
-* CA403: Added this policy to have never persistent browser sessions on any platform for admins persona
-* CA006: Added this policy to require App Protection for iOS and Android devices when accessing Exchange Online and SharePoint Online.
-* CA100: Added a few Admin roles to require MFA.
-* CA101: Added a few Admin roles to require MFA.
+
+- CA208: Added this policy to require MacOS device compliance
+- CA207: Added this policy to explicitly block certain apps on any platform for the internals persona.
+- CA404: Added this policy to explicitly block certain apps on any platform for the guest persona.
+- CA103: Added this policy to have never persistent browser sessions on any platform for admins persona
+- CA206: Added this policy to have never persistent browser sessions on any platform for internals persona
+- CA403: Added this policy to have never persistent browser sessions on any platform for admins persona
+- CA006: Added this policy to require App Protection for iOS and Android devices when accessing Exchange Online and SharePoint Online.
+- CA100: Added a few Admin roles to require MFA.
+- CA101: Added a few Admin roles to require MFA.
 
 ### 2025.2.1
-* CA104: Added Continuous Access Evaluation for admins
-* CA105: Added Phishing Resistant MFA for admins
-* CA209: Added Continuous Access Evaluation for internals
+
+- CA104: Added Continuous Access Evaluation for admins
+- CA105: Added Phishing Resistant MFA for admins
+- CA209: Added Continuous Access Evaluation for internals
 
 ### 2025.2.2
-* CA206: Wrong exclusion group was assigned. Has been fixed.
+
+- CA206: Wrong exclusion group was assigned. Has been fixed.
 
 ### 2025.2.3
-* CA201: Policy contained Signin Risk and User Risk in a single policy. Now separated into CA201 and CA210
-* CA210: Separated (new) policy for Signin Risk
+
+- CA201: Policy contained Signin Risk and User Risk in a single policy. Now separated into CA201 and CA210
+- CA210: Separated (new) policy for Signin Risk
 
 ### 2026.2.1
-* CA501: Template policy for High Risk Agents adopted into the framework.
-* CA005: Modified policy from **Require approved client app** to **RequireAppProtection** as this is being retired per March 2026.
-  
+
+- CA501: Template policy for High Risk Agents adopted into the framework.
+- CA005: Modified policy from **Require approved client app** to **RequireAppProtection** as this is being retired per March 2026.
 
 ## Persona's
 
 #### Global
-Global is a persona/placeholder for policies that are general 
-in nature or do not only apply to one persona. So it is used 
-to define policies that apply to all personas or don't apply to 
-one specific persona. The reason for having this persona is to 
-be able to have a model where we can protect all relevant 
-scenarios. It should be used to hold policies that apply to all 
-users or policies that enforce protection on scenarios not 
+
+Global is a persona/placeholder for policies that are general
+in nature or do not only apply to one persona. So it is used
+to define policies that apply to all personas or don't apply to
+one specific persona. The reason for having this persona is to
+be able to have a model where we can protect all relevant
+scenarios. It should be used to hold policies that apply to all
+users or policies that enforce protection on scenarios not
 covered by policies for other personas
 
 #### Admins
-We define admins in this context as any non-guest identity 
-(cloud or synced) that have any Azure AD or other Microsoft 
-365 admin Role (like in MDCA, Exchange, Defender for 
-Endpoints or Compliance). As guests who have such roles are 
-covered in a separate persona, guests are excluded from this 
+
+We define admins in this context as any non-guest identity
+(cloud or synced) that have any Azure AD or other Microsoft
+365 admin Role (like in MDCA, Exchange, Defender for
+Endpoints or Compliance). As guests who have such roles are
+covered in a separate persona, guests are excluded from this
 persona.
 
 #### Internals
-Internals cover all users who have an AD account synced to 
-Azure AD who are employees of the company and work in a 
+
+Internals cover all users who have an AD account synced to
+Azure AD who are employees of the company and work in a
 standard end-user role.
 
 #### Guests
-Guests holds all users who have an Azure AD guest account 
+
+Guests holds all users who have an Azure AD guest account
 that has been invited into the customer tenant
 
 #### Agents
-Agents covers all agent related resources which can be managed through Conditional Access
 
+Agents covers all agent related resources which can be managed through Conditional Access
 
 ## Conditional access policies
 
@@ -187,7 +199,7 @@ This policy blocks legacy authentication for all users, to all cloud apps, from 
 This policy requires MFA for all users, to register or join a device to your tenant/environment.
 
 > [!TIP]
-> Make sure to disable *Require Multifactor Authentication to register or join devices with Microsoft Entra*. This can be found under https://portal.azure.com -> Entra ID -> Devices -> Device settings.
+> Make sure to disable _Require Multifactor Authentication to register or join devices with Microsoft Entra_. This can be found under https://portal.azure.com -> Entra ID -> Devices -> Device settings.
 
 ![CA003](./Images/CA003.png)
 
@@ -257,7 +269,6 @@ This policy requires Phishing Resistant MFA for admins. It does exclude Microsof
 
 This policy requires MFA for all internal identities, for all cloud applications, from any platform.
 
-
 > [!IMPORTANT]
 > Verify the included group(s) and/or add your custom groups which have all internals in it. APP_Microsoft365_E5 is added as an example.
 
@@ -325,7 +336,7 @@ This policy prevents having persistent browser sessions for internals from unman
 
 ### CA207-Internals-AttackSurfaceReduction-SelectedApps-AnyPlatform-BLOCK
 
-This policy prevents internals from accessing specific apps. In this example i've blocked a random app. You should review the included and excluded apps. Excluding office 365 is not necessary if its not included. This is just an example. 
+This policy prevents internals from accessing specific apps. In this example i've blocked a random app. You should review the included and excluded apps. Excluding office 365 is not necessary if its not included. This is just an example.
 
 > [!IMPORTANT]
 > Verify the included group(s) and/or add your custom groups which have all internals in it. APP_Microsoft365_E5 is added as an example.
@@ -403,7 +414,7 @@ This policy prevents guest from having persistent browser sessions.
 
 ### CA404-Guests-AttackSurfaceReduction-SelectedApps-AnyPlatform-BLOCK
 
-This policy prevents guests from accessing specific apps. In this example i've blocked a random app. You should review the included and excluded apps. Excluding office 365 is not necessary if its not included. This is just an example. 
+This policy prevents guests from accessing specific apps. In this example i've blocked a random app. You should review the included and excluded apps. Excluding office 365 is not necessary if its not included. This is just an example.
 
 ![CA404](./Images/CA404.png)
 
@@ -415,17 +426,19 @@ This policy blocks agent identities with a high risk level from accessing resour
 
 ## Named locations
 
-| Name | Location type | Assigned to policy |
-| -------- | -------- | -------- |
-| ALLOWED COUNTRIES | Countries (IP) | CA001-Global-AttackSurfaceReduction-AnyApp-AnyPlatform-BLOCK-CountryWhitelist |
-| ALLOWED COUNTRIES - SERVICE ACCOUNTS | Countries (IP) | CA301-ServiceAccounts-AttackSurfaceReduction-AllApps-AnyPlatform-BlockUntr|
+| Name                                 | Location type  | Assigned to policy                                                            |
+| ------------------------------------ | -------------- | ----------------------------------------------------------------------------- |
+| ALLOWED COUNTRIES                    | Countries (IP) | CA001-Global-AttackSurfaceReduction-AnyApp-AnyPlatform-BLOCK-CountryWhitelist |
+| ALLOWED COUNTRIES - SERVICE ACCOUNTS | Countries (IP) | CA301-ServiceAccounts-AttackSurfaceReduction-AllApps-AnyPlatform-BlockUntr    |
 
 ## Considerations
+
 1. You might want to remove the "CA - BreakGlassAccounts - Exclude" group from Admin MFA policies (CA101, CA102) if they use MFA and/or only exclude 1 single BreakGlass account.
 
 ## Troubleshooting
 
 1. If you encounter an error when importing policies CA203/CA205/CA208, it may be due to the absence of the "Microsoft Intune Enrollment" app in your tenant. To resolve this, recreate it using PowerShell with the following commands:
+
 ```
   Connect-MgGraph
   New-MgServicePrincipal -AppId d4ebce55-015a-49b5-a083-c84d1797ae8c
@@ -448,7 +461,7 @@ The script also support dependencies e.g. an App Protection is depending on an A
 
 ### Setup IntuneManagement
 
-Start by downloading the files in GitHub. Extract the Github repo somewhere on your device. For example: *C:\Intune\IntuneManagement*.
+Start by downloading the files in GitHub. Extract the Github repo somewhere on your device. For example: _C:\Intune\IntuneManagement_.
 
 ![IntuneManagement2](./Images/IntuneManagement2.png)
 
@@ -459,6 +472,7 @@ Get-ChildItem -Path "C:\Intune\IntuneManagement\" -File -Recurse | Unblock-File
 ```
 
 Start the IntuneManagementTool
+
 ```
 cd C:\Intune\IntuneManagement\
 .\Start-IntuneManagement.ps1
@@ -484,7 +498,7 @@ Go ahead and accept the popup again, this should clear all the red text on the l
 
 ![IntuneManagement7](./Images/IntuneManagement7.png)
 
-Now we can start importing, exporting, or comparing tenant configurations. 
+Now we can start importing, exporting, or comparing tenant configurations.
 
 ### Import the configuration
 
